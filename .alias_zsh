@@ -1,0 +1,54 @@
+alias -s {mp3,m4a,flac}="mpv"
+alias -s {png,jpg,tiff,bmp}="viewnior"
+
+
+alias speed="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
+alias upgrub="sudo grub-mkconfig -o /boot/grub/grub.cfg"
+alias mk="mkdir"
+alias gi="git init"
+alias porn="mpv 'http://www.pornhub.com/random'"
+
+alias gc="git clone "
+alias gr="git remote "
+
+gitadd () {
+  git add .
+  git remote add origin "$1"
+}
+gitsend () {
+	git commit -m "$1" 
+	git branch -M main
+	git push -u origin main
+}
+volSet(){
+	while : do
+		pactl set-source-volume alsa_input.pci-0000_00_1f.3.analog-stereo.echo-cancel "$1"%
+		sleep 0.1	
+}
+
+# Youtube
+ytv () {
+  pipe-viewer "$1" -fs
+}
+dlv () {
+  youtube-dl --ignore-errors -o '~/Videos/youtube/%(title)s.%(ext)s' "$1"
+}
+dlp () {
+  youtube-dl --ignore-errors -o '~/Videos/youtube/%(playlist)s/%(title)s.%(ext)s' "$1"
+}
+mp3 () {
+  youtube-dl --ignore-errors -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o '~/Music/youtube/%(title)s.%(ext)s' "$1"
+}
+mp3p () {
+  youtube-dl --ignore-errors -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o '~/Music/youtube/%(playlist)s/%(title)s.%(ext)s' "$1"
+}
+
+# Systemd
+alias sse="sudo systemctl enable"
+alias ssd="sudo systemctl disable"
+alias ssr="sudo systemctl restart"
+alias ssp="sudo systemctl stop"
+
+
+
+
