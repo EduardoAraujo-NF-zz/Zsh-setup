@@ -1,16 +1,23 @@
-alias -s {mp3,m4a,flac}="mpv"
-alias -s {png,jpg,tiff,bmp}="viewnior"
+#!/usr/bin/bash
 
+# Bass commands
+soundBass(){
+	module=$(pactl load-module module-loopback latency_msec=1 channels=1)
+}
+stopBass(){
+	pactl unload-module "$module"
+}
 
+alias mi9="scrcpy --bit-rate 100M"
+
+alias mi="micro"
 alias speed="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
-alias upgrub="sudo grub-mkconfig -o /boot/grub/grub.cfg"
-alias mk="mkdir"
+
 alias gi="git init"
-alias porn="mpv 'http://www.pornhub.com/random'"
-
-alias gc="git clone "
-alias gr="git remote "
-
+alias gs="git status"
+gc () {
+  git clone "$1"
+}
 gitadd () {
   git add .
   git remote add origin "$1"
@@ -20,15 +27,10 @@ gitsend () {
 	git branch -M main
 	git push -u origin main
 }
-volSet(){
-	while : do
-		pactl set-source-volume alsa_input.pci-0000_00_1f.3.analog-stereo.echo-cancel "$1"%
-		sleep 0.1	
-}
 
-# Youtube
+alias yt="straw-viewer"
 ytv () {
-  pipe-viewer "$1" -fs
+  straw-viewer "$1"
 }
 dlv () {
   youtube-dl --ignore-errors -o '~/Videos/youtube/%(title)s.%(ext)s' "$1"
@@ -43,12 +45,66 @@ mp3p () {
   youtube-dl --ignore-errors -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o '~/Music/youtube/%(playlist)s/%(title)s.%(ext)s' "$1"
 }
 
-# Systemd
+alias packey="sudo pacman-key --init && sudo pacman-key --populate archlinux && sudo pacman-key --refresh-keys && sudo pacman -Syy"
+
+# systemd
 alias sse="sudo systemctl enable"
 alias ssd="sudo systemctl disable"
+alias ssen="sudo systemctl enable --now"
+alias ssdn="sudo systemctl disable --now"
 alias ssr="sudo systemctl restart"
 alias ssp="sudo systemctl stop"
+alias sss="sudo systemctl status"
+
+# update grub
+alias upgrub="sudo grub-mkconfig -o /boot/grub/grub.cfg"
 
 
+function ex {
+ if [ -z "$1" ]; then
+    echo "Uso: ex <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+ else
+    if [ -f "$1" ] ; then
+        NAME=${1%.*}
+        #mkdir $NAME && cd $NAME
+        case "$1" in
+          *.tar.bz2)   tar xvjf ./"$1"    ;;
+          *.tar.gz)    tar xvzf ./"$1"    ;;
+          *.tar.xz)    tar xvJf ./"$1"    ;;
+          *.lzma)      unlzma ./"$1"      ;;
+          *.bz2)       bunzip2 ./"$1"     ;;
+          *.rar)       unrar x -ad ./"$1" ;;
+          *.gz)        gunzip ./"$1"      ;;
+          *.tar)       tar xvf ./"$1"     ;;
+          *.tbz2)      tar xvjf ./"$1"    ;;
+          *.tgz)       tar xvzf ./"$1"    ;;
+          *.zip)       unzip ./"$1"       ;;
+          *.Z)         uncompress ./"$1"  ;;
+          *.7z)        7z x ./"$1"        ;;
+          *.xz)        unxz ./"$1"        ;;
+          *.exe)       cabextract ./"$1"  ;;
+          *)           echo "ex: '$1' - Não pode ser descompactado" ;;
+        esac
+    else
+        echo "'$1' - Não é um arquivo descompactavel"
+    fi
+fi
+}
 
-
+function pk () {
+  if [ $1 ] ; then
+    case $1 in
+      tbz)       tar cjvf $2.tar.bz2 $2      ;;
+      tgz)       tar czvf $2.tar.gz  $2       ;;
+      txz)       tar -caf $2.tar.xz  $2       ;;
+      tar)       tar cpvf $2.tar  $2       ;;
+      bz2)       bzip $2 ;;
+      gz)        gzip -c -9 -n $2 > $2.gz ;;
+      zip)       zip -r $2.zip $2   ;;
+      7z)        7z a $2.7z $2    ;;
+      *)         echo "'$1' Não pode ser compactado" ;;
+    esac
+  else
+    echo "'$1' Não é um arquivo compactavel"
+  fi
+}
