@@ -1,0 +1,1 @@
+[[ -f ~/.alias_zsh ]] && . ~/.alias_zsh #Append on .zshrc
